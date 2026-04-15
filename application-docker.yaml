@@ -1,0 +1,92 @@
+# application-docker.yml
+# Place this file in src/main/resources/ of each Spring Boot microservice
+
+spring:
+  profiles:
+    active: docker
+  
+  # MongoDB Configuration
+  data:
+    mongodb:
+      host: ${SPRING_DATA_MONGODB_HOST:mongodb}
+      port: ${SPRING_DATA_MONGODB_PORT:27017}
+      database: ${SPRING_DATA_MONGODB_DATABASE:smartglobe}
+      username: ${SPRING_DATA_MONGODB_USERNAME:admin}
+      password: ${SPRING_DATA_MONGODB_PASSWORD:password123}
+      authentication-database: admin
+
+  # RabbitMQ Configuration
+  rabbitmq:
+    host: ${SPRING_RABBITMQ_HOST:rabbitmq}
+    port: ${SPRING_RABBITMQ_PORT:5672}
+    username: ${SPRING_RABBITMQ_USERNAME:admin}
+    password: ${SPRING_RABBITMQ_PASSWORD:password123}
+    virtual-host: /
+
+  # Redis Configuration
+  redis:
+    host: ${SPRING_REDIS_HOST:redis}
+    port: ${SPRING_REDIS_PORT:6379}
+    password: ${SPRING_REDIS_PASSWORD:password123}
+    timeout: 2000ms
+    lettuce:
+      pool:
+        max-active: 8
+        max-idle: 8
+        min-idle: 0
+
+  # Application Configuration
+  application:
+    name: ${SERVICE_NAME:smartglobe-service}
+  
+  # JPA Configuration (if using JPA with MongoDB)
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: none
+
+# Server Configuration
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
+# Management Endpoints
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus,metrics
+  endpoint:
+    health:
+      show-details: always
+  health:
+    mongo:
+      enabled: true
+    redis:
+      enabled: true
+    rabbit:
+      enabled: true
+
+# Logging Configuration
+logging:
+  level:
+    org.springframework.data.mongodb: INFO
+    org.springframework.amqp: INFO
+    com.smartglobe: DEBUG
+  pattern:
+    console: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+
+# Custom Application Properties
+app:
+  security:
+    jwt:
+      secret: ${JWT_SECRET:mySecretKey}
+      expiration: 86400000
+  cors:
+    allowed-origins: 
+      - http://localhost:3000
+      - http://sg-dashboard:3000
+      - http://localhost:8081
+      - http://krakend:8080
