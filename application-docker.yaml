@@ -89,4 +89,4 @@ app:
       - http://localhost:3000
       - http://sg-dashboard:3000
       - http://localhost:8081
-      - http://krakend:8080
+      - http://kong:8000
